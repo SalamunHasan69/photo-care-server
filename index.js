@@ -18,6 +18,7 @@ MongoClient.connect(uri, function (err, client) {
   // perform actions on the collection object
   try {
     const serviceCollection = client.db('photoCare').collection('services');
+    const reviewCollection = client.db('photoCare').collection('reviews');
 
     app.get('/services', async (req, res) => {
       const query = {}
