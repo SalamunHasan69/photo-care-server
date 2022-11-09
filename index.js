@@ -32,6 +32,12 @@ MongoClient.connect(uri, function (err, client) {
       const query = { _id: ObjectId(id) };
       const service = await serviceCollection.findOne(query);
       res.send(service);
+    });
+
+    app.post('/myReviews', async (req, res) => {
+      const review = req.body;
+      const result = await reviewCollection.insertOne(review);
+      res.send(result);
     })
 
   }
