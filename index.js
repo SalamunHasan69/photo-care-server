@@ -1,21 +1,24 @@
 const express = require('express');
 const cors = require('cors');
-const { ObjectId } = require('mongodb');
-var MongoClient = require('mongodb').MongoClient;
-const app = express();
-const port = process.env.PORT || 5000;
+// const { ObjectId } = require('mongodb');
+// var MongoClient = require('mongodb').MongoClient;
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 
+const app = express();
+const port = process.env.PORT || 5000;
+
+
+// middle wares
 app.use(cors());
 app.use(express.json());
 
 
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.3kn3bwn.mongodb.net/?retryWrites=true&w=majority`;
+// console.log(uri);
+const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true, serverApi: ServerApiVersion.v1 });
 
-
-var uri = `mongodb://${process.env.DB_USER}:${process.env.DB_PASSWORD}@ac-aszh8hu-shard-00-00.3kn3bwn.mongodb.net:27017,ac-aszh8hu-shard-00-01.3kn3bwn.mongodb.net:27017,ac-aszh8hu-shard-00-02.3kn3bwn.mongodb.net:27017/?ssl=true&replicaSet=atlas-yt8a18-shard-0&authSource=admin&retryWrites=true&w=majority`;
-MongoClient.connect(uri, function (err, client) {
-  const collection = client.db("test").collection("devices");
-  // perform actions on the collection object
+async function run() {
   try {
     const serviceCollection = client.db('photoCare').collection('services');
     const reviewCollection = client.db('photoCare').collection('reviews');
@@ -34,6 +37,7 @@ MongoClient.connect(uri, function (err, client) {
       res.send(service);
     });
 
+    // reviews api
     app.post('/myReviews', async (req, res) => {
       const review = req.body;
       const result = await reviewCollection.insertOne(review);
@@ -57,17 +61,15 @@ MongoClient.connect(uri, function (err, client) {
   finally {
 
   }
-});
+};
 
-async function run() {
 
-}
 run().catch(error => console.error(error));
 
 app.get('/', (req, res) => {
-  res.send('Photo Care Server is Running')
-});
+  res.send('genius car server is running')
+})
 
 app.listen(port, () => {
-  console.log(`Photo care server running on ${port}`);
-});
+  console.log(`Genius Car server running on ${port}`);
+})
